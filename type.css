@@ -1,0 +1,113 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+*{
+    padding: 0;
+    margin: 0;
+}
+
+body{
+    background-color: rgba(0, 0, 0, 0.775);
+    color: antiquewhite;
+    letter-spacing: 1px;
+
+}
+#heading{
+    display: flex;
+    justify-content: space-between;
+    padding: 30px 170px;
+}
+
+#worddiv{
+    display: flex;
+    justify-content: center;
+}
+#word{
+    display: flex;
+    flex-direction: row;
+    color: rgba(255, 255, 255, 0.205);
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 30px;
+    width: 60vw;
+    padding: 30px 32px;
+    font-family: "poppins";
+}
+
+#start{
+    display: flex;
+    justify-content: space-between;
+    width: 64vw;
+    /* border: 10px solid red; */
+}
+#input{
+    padding-top: 25px;
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#text{
+    width: 64vw;
+    height: 16vh;
+    font-size: 25px;
+    padding: 6px 24px;
+    /* display: none; */
+    /* visibility: hidden; */
+    outline: none;
+    border: none;
+    position: relative;
+    right: 5000px;
+    background-color: rgba(71, 69, 69, 0.775);
+}
+#result{
+    display: none;
+    justify-content: center;
+    align-items: center;
+    color: rgba(250, 235, 215, 0.897);
+}
+
+.correct{
+    color: white;
+}
+.incorrect{
+    color: rgba(255, 0, 0, 0.844);
+}
+.grey{
+    color: rgba(255, 255, 255, 0.205);
+}
+span{
+    position: relative;
+}
+
+.letter::before{
+    content:"";
+    position: absolute;
+    left: -5%;
+    top: 13%;
+    width: 3px;
+    height: 35px;
+    background-color: rgb(255, 231, 15);
+    visibility: hidden;
+    transition: all 0.1ss;
+}
+.letter::after{
+    content:"";
+    position: absolute;
+    right   : 0;
+    top: 13%;
+    width: 3px;
+    height: 35px;
+    background-color: rgb(255, 231, 15);
+    visibility: hidden;
+}
+
+.current::before{
+    /* content: ""; */
+    visibility: visible;
+   
+}
+
+.cursoratright::after{
+    visibility: visible;
+}
