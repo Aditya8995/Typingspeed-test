@@ -1,135 +1,373 @@
 import words from "./words.js";
-let text = document.querySelector("#text");
 
+// selection of elements
+const speedtype = document.querySelector("#speedtype");
+const exitBtn = document.querySelector("#exit");
+const word = document.querySelector("#word");
+const numberOfWords = document.querySelectorAll(".numberOfWords");
+const timeBtn = document.querySelector("#timeBtn");
+const wordBtn = document.querySelector("#wordBtn");
+const wordCount = document.querySelector("#wordCount");
+const timeSelected = document.querySelector("#timeSelected");
+const timeToCompleteTest = document.querySelectorAll(".timeToCompleteTest");
+const restartTest = document.querySelector("#restartTest");
+const rotateRight = document.querySelector("#rotateRight");
+const nextTest = document.querySelector("#nextTest");
+const repeatTest = document.querySelector("#repeatTest");
+const timer = document.querySelector("#timer");
+const wordsCompleted = document.querySelector("#wordsCompleted");
+const text = document.querySelector("#text");
+const showResult = document.querySelector("#showResult");
+const wpm = document.querySelector("#wpmNumber");
+const accuracy = document.querySelector("#accuracy");
+let selectedwords = [];
+let n = words.length;
+let t = 15;
+let timerid;
+let inputtext;
+let check1;
+let wd,lt,startDate;
+let originallength;
+
+// Event listners
+exitBtn.addEventListener("click", () => window.close());
+timeBtn.addEventListener("click", SetModeToTime);
+wordBtn.addEventListener("click", SetModeToWord);
+numberOfWords.forEach(wordBtnSelected => {
+    wordBtnSelected.addEventListener("click", () => setNumberOfWords(wordBtnSelected));
+});
+timeToCompleteTest.forEach(timeBtnSelected => {
+    timeBtnSelected.addEventListener("click", () => setTimeToCompleteTest(timeBtnSelected));
+});
+rotateRight.addEventListener('click', restart);
+nextTest.addEventListener('click', reset);
+repeatTest.addEventListener('click', repeat);
+
+
+//  to focus our input div
 text.focus();
 window.onclick = (()=>{
     text.focus();
 })
 
-const n = 25;
-const selectedwords=[];
-for(let i=0; i<n; i++){
-    selectedwords.push(words[Math.floor(Math.random()*words.length)]);
+
+//  function to add class
+function addClass(el,name){
+    el.classList.add(name);
 }
-let word = document.querySelector("#word");
-for(let i=0; i<n; i++){
-    let div = document.createElement("div");
-    for(let j=0; j<selectedwords[i].length; j++){
-        let span = document.createElement("span");
-        span.innerText = selectedwords[i][j];
-        span.classList.add("grey"); 
-        span.classList.add("letter");
-        div.appendChild(span);
+//  function to remove class
+function removeClass(el,name){
+    el.classList.remove(name);
+}
+
+
+//  begin the new game by adding words to the word div
+function newGame(){
+    word.style.marginTop = "0px";
+    selectedwords=[];
+    word.innerText = "";
+    for(let i=0; i<n; i++){
+        selectedwords.push(words[Math.floor(Math.random()*words.length)]);
     }
-    word.appendChild(div);
+    //  used to add elements to the div
+    for(let i=0; i<n; i++){
+        let div = document.createElement("div");
+        for(let j=0; j<selectedwords[i].length; j++){
+            let span = document.createElement("span");
+            span.innerText = selectedwords[i][j];
+            addClass(span, "grey"); 
+            addClass(span, "letter");
+            div.appendChild(span);
+        }
+        word.appendChild(div);
+    }
+    //  used to check the position of the word div
+    //  so to adjust the padding of the restart button
+    if((Number(word.getBoundingClientRect().bottom) > 400) && (n === 25)){
+        restartTest.style.paddingTop = "4.1vh";
+    }
 }
- 
-let inputtext=[];
-let check = "true";
-let wd,lt,startDate;
-wd = 0;
-lt = 0;
-let originallength;
-word.children[wd].children[lt].classList.add("current");
+
+
+//  initialize the variables used 
+function startgame(){
+    inputtext=[];
+    check1 = true;
+    wd = 0;
+    lt = 0;
+    addClass(word.children[wd].children[lt],"current");
+    wordsCompleted.style.color = "#2e2f32";
+    timer.style.color = "#2e2f32";    
+    clearInterval(timerid);
+}
+
+
+//  used to run against keyboard responses
 document.querySelector("#text").onkeyup = function(e) {
     if((e.keyCode >= 32 && e.keyCode <= 126) || e.keyCode == 8){
-        if(check){
+        if(check1){
             startDate = new Date();
-            check = false;
+            wordsCompleted.innerText = `${wd}/${n}`;
+            timer.innerText = `${t}`;
+            //  used to display the timer or words completed according to the mode selected
+            if(timeBtn.classList.contains("activeMode")){
+                wordsCompleted.style.display = "none";
+                timer.style.display = "flex";
+                timer.style.color = "#e2b714";
+            }
+            else{
+                timer.style.display = "none";
+                wordsCompleted.style.display = "flex";
+                wordsCompleted.style.color = "#e2b714";
+            }
+            //   used to start the timer
+            if(timeBtn.classList.contains("activeMode")){
+                timerid = setInterval(() => {
+                    let temporary = Number(timer.innerText)-1;
+                    timer.innerText = temporary;
+                    //  used to show result
+                    if(timer.innerText == "0"){
+                        result(t);
+                        clearInterval(timerid);
+                    }
+                }, 1000);
+            }
+            check1 = false;
         }
         if(lt == 0){
             originallength = word.children[wd].innerText.length;
         }
-    
+        //   used to add word entered in input area to the array
         if ((e.key == " " ||
             e.code == "Space" ||      
             e.keyCode == 32) && (lt != 0)      
         ) {
-            word.children[wd].children[lt-1].classList.remove("cursoratright");
-            if(lt < originallength) word.children[wd].children[lt].classList.remove("current");
+            wordsCompleted.innerText = `${wd+1}/${n}`
+            removeClass(word.children[wd].children[lt-1] , "cursoratright");
+            if(lt < originallength) removeClass(word.children[wd].children[lt] , "current");
             wd++;
             lt = 0;
             if(wd < n)
-                word.children[wd].children[lt].classList.add("current");
-            let s = document.querySelector("#text").value;
+                addClass(word.children[wd].children[lt] , "current");
+            let s = text.value;
             
             inputtext.push(s.trim());
-            document.querySelector("#text").value = "";
-        
-            console.log(inputtext);
-            if(inputtext.length == n){
-                check = true;
+            text.value = "";
+            //  show result
+            if(inputtext.length == n && (wordBtn.classList.contains("activeMode"))){
                 let currentDate = new Date();
-                let time = currentDate-startDate;
-                let correctcount = 0;
-                for(let i=0; i<n; i++){
-                    if(inputtext[i] === selectedwords[i]){
-                        correctcount += 1;
-                    }
-                }
-                console.log(time);
-                console.log(correctcount);
-                let typingspeed = Math.round((correctcount*60)*1000/time);
-                let result = document.querySelector("#result");
-                let result1 = document.querySelector("#result1");
-                let speedtype = document.querySelector("#speedtype");
-                speedtype.style.display = "none";
-                result1.innerHTML = "Typing speed is : " + typingspeed + " wpm";
-                result.style.display = "flex";
-
+                let time = (currentDate-startDate)/1000;
+                result(time);
+            }
         }
-        }
+        //  if backspace is pressed and extra letters have to be removed
         else if((e.keyCode == 8 || e.code == "Backspace") && lt > originallength){
             lt--;
-            word.children[wd].children[lt-1].classList.add("cursoratright");
+            addClass(word.children[wd].children[lt-1] , "cursoratright");
             word.children[wd].removeChild(word.children[wd].children[lt]);
         }
+        //  if letters have to be removed
         else if(e.keyCode == 8 || e.code == "Backspace"){
             if(lt != 0){
                 lt--;
-                word.children[wd].children[lt].classList.add("grey");
-                word.children[wd].children[lt].classList.remove("incorrect");
-                word.children[wd].children[lt].classList.remove("correct");
-                word.children[wd].children[lt].classList.add("current");
+                addClass(word.children[wd].children[lt] , "grey");
+                removeClass(word.children[wd].children[lt] , "incorrect");
+                removeClass(word.children[wd].children[lt] , "correct");
+                addClass(word.children[wd].children[lt] , "current");
                 if(lt == originallength-1){
-                    word.children[wd].children[lt].classList.remove("cursoratright");
+                    removeClass(word.children[wd].children[lt] , "cursoratright");
                 }
                 else{
-                    word.children[wd].children[lt+1].classList.remove("current");
+                    removeClass(word.children[wd].children[lt+1] , "current");
                 }
             }
         }
+        //  if extral letters is to be added 
         else if(lt >= originallength){
             let extra = document.createElement("span");
             console.log(5);
             extra.innerText = e.key;
             extra.classList.add("incorrect") ;
             word.children[wd].appendChild(extra);
-            word.children[wd].children[lt].classList.add("cursoratright");
-            word.children[wd].children[lt].classList.add("letter");
-            word.children[wd].children[lt-1].classList.remove("cursoratright");
+            addClass(word.children[wd].children[lt] , "cursoratright");
+            addClass(word.children[wd].children[lt] , "letter");
+            removeClass(word.children[wd].children[lt-1] , "cursoratright");
             lt++;
         }
+        //  if the letter entered is correct
         else if(e.key == word.children[wd].children[lt].innerText){
-            word.children[wd].children[lt].classList.add("correct");
-            word.children[wd].children[lt].classList.remove("grey");
-            word.children[wd].children[lt].classList.remove("current");
+            addClass(word.children[wd].children[lt] , "correct");
+            removeClass(word.children[wd].children[lt] , "grey");
+            removeClass(word.children[wd].children[lt] , "current");
             if(lt<originallength-1)
-                word.children[wd].children[lt+1].classList.add("current");
+                addClass(word.children[wd].children[lt+1] , "current");
             else
-                word.children[wd].children[lt].classList.add("cursoratright");
+                addClass(word.children[wd].children[lt] , "cursoratright");
             lt++;
         }
+        //  if the letter entered is incorrect
         else if(e.key != word.children[wd].children[lt].innerText && e.key != " "){
-            word.children[wd].children[lt].classList.add("incorrect");
-            word.children[wd].children[lt].classList.remove("grey");
-            word.children[wd].children[lt].classList.remove("current");
+            addClass(word.children[wd].children[lt] , "incorrect");
+            removeClass(word.children[wd].children[lt] , "grey");
+            removeClass(word.children[wd].children[lt] , "current");
             if(lt<originallength-1)
-                word.children[wd].children[lt+1].classList.add("current");
+                addClass(word.children[wd].children[lt+1] , "current");
             else
-                word.children[wd].children[lt].classList.add("cursoratright");
+                addClass(word.children[wd].children[lt] , "cursoratright");
             lt++;
         }
     }
-  }
+
+    //  it is used to change the margin of the worddiv according to the value of n
+    //  so that if cursor reaches the last line all the lines could shift one position upwards
+    const currentLetter = document.querySelector(".current");
+    if(currentLetter != null && (currentLetter.getBoundingClientRect().top > 350)){
+        const margin = parseInt(word.style.marginTop || '0px');
+        word.style.marginTop = (margin - 47) + 'px';
+    }
+}
+
+
+//  used to select mode as time
+function SetModeToTime() {
+    removeClass(wordBtn,"activeMode")
+    addClass(timeBtn,"activeMode");
+    wordCount.style.display = "none";
+    timeSelected.style.display = "flex";
+    n = words.length;
+    word.style.height = "142px";
+    word.parentElement.style.height = "142px";
+    restartTest.style.paddingTop = "5vh";
+    newGame();
+    startgame();
+}
+
+//  used to select mode as word
+function SetModeToWord() {
+    removeClass(timeBtn,"activeMode");
+    addClass(wordBtn,"activeMode")
+    timeSelected.style.display = "none";
+    wordCount.style.display = "flex";
+    restartTest.style.paddingTop = "16.7vh";
+    numberOfWords.forEach(e => {
+        if(e.classList.contains("currentWordCount")){
+            n = Number(e.innerText);
+        }
+    })
+    if(n === 25 || n === 10){
+        word.style.height = "auto";
+        word.parentElement.style.height = "auto";
+    }
+    if(n === 10){
+        restartTest.style.paddingTop = "16.7vh";
+    }
+    newGame();
+    startgame();
+}
+
+//  used to select number of words to be displayed
+function setNumberOfWords(wordBtnSelected) {
+        numberOfWords.forEach(e => {
+            removeClass(e, "currentWordCount");
+        })
+        addClass(wordBtnSelected, "currentWordCount");
+        n = Number(wordBtnSelected.innerText);
+        if (n === 25 || n === 10) {
+            word.style.height = "auto";
+            word.parentElement.style.height = "auto";
+            if(n === 10){
+                restartTest.style.paddingTop = "16.7vh";
+            }
+            else {
+                restartTest.style.paddingTop = "10.4vh";
+            }
+        } 
+        else {
+            word.style.height = "142px";
+            word.parentElement.style.height = "142px";
+            restartTest.style.paddingTop = "5vh";
+        }
+        newGame();
+        startgame();
+    }
+
+
+//  used to select the time for the timer    
+function setTimeToCompleteTest(timeBtnSelected) {
+        timeToCompleteTest.forEach(e => {
+            removeClass(e , "currentTimeSelected");
+        })
+        addClass(timeBtnSelected , "currentTimeSelected");
+        n = words.length;
+        t = Number(timeBtnSelected.innerText);
+        newGame();
+        startgame();
+    }
+
+
+    //  used to show the result
+function result(timeTaken){ 
+    let correctChracters = 0;
+    let incorrectChracters = 0;
+    let typingSpeed = 0;
+    let acc = 0;
+    for(let i=0; i<wd; i++){
+        for(let j=0; j<selectedwords[i].length; j++){
+            if(inputtext[i][j] === selectedwords[i][j]){
+                correctChracters += 1;
+            }
+            else incorrectChracters += 1;
+        }
+        if(inputtext[i].length > selectedwords[i].length) incorrectChracters += (inputtext[i].length - selectedwords[i].length);
+    }
+    typingSpeed = ((correctChracters / 5) * 60) / timeTaken;
+    acc = (correctChracters / (correctChracters + incorrectChracters)) * 100;
+
+    wpm.innerText = Math.round(typingSpeed);
+    accuracy.innerText = Math.round(acc);
+    removeClass(showResult , "hide");
+    addClass(speedtype , "hide");
+}
+
+
+ 
+//  used to restart the game  
+function  restart() {
+    newGame();
+    startgame();
+};
+
+//  used to reset the game to new one
+function reset() {
+    newGame();
+    startgame();
+    removeClass(speedtype , "hide");
+    addClass(showResult , "hide");
+};
+
+//  used to reset the game played before
+function repeat() {
+    //  used to remove all the classes that have been assigned to the letters of word div
+    for(let i=0; i<n; i++){
+        let extraLength = word.children[i].innerText.length;
+        console.log(extraLength);
+        for(let j=extraLength-1; j>=selectedwords[i].length; j--){
+            word.children[i].removeChild(word.children[i].children[j]);
+        }
+    }
+    //  used to assign initial class to all the letters in word div
+    for(let i=0; i<n; i++){
+        for(let j=0; j<selectedwords[i].length; j++){
+            word.children[i].children[j].className = '';
+            word.children[i].children[j].classList.add("grey"); 
+            word.children[i].children[j].classList.add("letter");
+        }
+    }
+    removeClass(speedtype , "hide");
+    addClass(showResult , "hide");
+    startgame();
+};
+
+newGame();
+startgame();
    

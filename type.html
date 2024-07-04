@@ -1,33 +1,90 @@
-<!DOCTYPE html>git
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Speedtype</title>
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer"">
     <link rel="stylesheet" href="type.css">
 </head>
 <body>
     <div id="speedtype">
         <div id="heading">
-            <h1 style="font-size: 40px;">speedtype</h1>
-            <button id ="exit">Exit</button>
+            <div id="headingname">
+                <i class="fa-solid fa-keyboard"></i>
+                <h2>speedtype</h2>
+            </div>
+            <button id ="exit">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </button>
         </div>
-        <div id="worddiv">
+        <div id="showmode">
+            <div id="mode">
+                <div id="timeMode">
+                    <button id="timeBtn" class="modesBtn activeMode">time</button>
+                </div>
+                <div class="separator"></div>
+                <div id="wordMode">
+                    <button id="wordBtn" class="modesBtn">word</button>
+                </div>
+                <div class="separator"></div>
+                <div id="wordCount">
+                    <button class="numberOfWords currentWordCount">10</button>
+                    <button class="numberOfWords">25</button>
+                    <button class="numberOfWords">50</button>
+                    <button class="numberOfWords">100</button>
+                </div>
+                <div id="timeSelected">
+                    <button class="timeToCompleteTest currentTimeSelected">15</button>
+                    <button class="timeToCompleteTest">30</button>
+                    <button class="timeToCompleteTest">60</button>
+                    <button class="timeToCompleteTest">120</button>
+                </div>
+            </div>
+        </div>
+        <div id="modeOptions">
+            <div id="wordsCompleted"><p>hello</p></div>
+            <div id="timer">10</div>
+        </div>
+        <div id="worddiv" tabindex="0">
             <div id="word"></div>
         </div>
+        <div id="restartTest">
+            <button id="rotateRight" class="newtest">
+                <i class="fa-solid fa-rotate-right"></i>
+            </button>
+        </div>
         <div id="input">
-            <div id="start">
-                <button>start</button>
-                <div id="timer">timer</div>
-            </div>
             <input name="" id="text"/>
            
         </div>
     </div>
-    <div id="result">
-        <h2 id="result1"></h2>
+    <div class="hide" id="showResult">
+        <div id="result">
+            <div id="resultDetails">
+                <div id="wpm">
+                    <div id="wpmText" style="font-size: 35px; color:rgba(250, 235, 215, 0.593);">wpm</div>
+                    <div id="wpmNumber" style="font-size: 70px; color:#e2b714;">78</div>
+                </div>
+                <div id="acc">
+                    <div id="accText" style="font-size: 35px; color:rgba(250, 235, 215, 0.593);">Accuracy</div>
+                    <div id="accNumber" style="display: flex; align-items: center; color:#e2b714;">
+                        <div id="accuracy" style="font-size: 70px;">90</div>
+                        <div id="percentage" style="font-size: 60px;">%</div>
+                    </div>
+                </div>
+            </div>
+            <div id = "options">
+                <button id="nextTest" class="newtest">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+                <button id="repeatTest">
+                    <i class="fa-solid fa-rotate"></i>
+                </button>
+            </div>
+        </div>
     </div>
     <script src="./type.js" type="module"></script>
+    <script src="./words.js" type="module"></script>
 </body>
 </html>
