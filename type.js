@@ -1,4 +1,6 @@
-import words from "./words.js";
+const words =  [
+    "the", "be", "to", "of", "and", "a", "in", "that", "have", "i","it", "for", "not", "on", "with", "he", "as", "you", "do", "at","this", "but", "his", "by", "from", "they", "we", "say", "her", "she","or", "an", "will", "my", "one", "all", "would", "there", "their", "what","so", "up", "out", "if", "about", "who", "get", "which", "go", "me","when", "make", "can", "like", "time", "no", "just", "him", "know", "take","people", "into", "year", "your", "good", "some", "could", "them", "see", "other","than", "then", "now", "look", "only", "come", "its", "over", "think", "also","back", "after", "use", "two", "how", "our", "work", "first", "well", "way","even", "new", "want", "because", "any", "these", "give", "day", "most", "us","is", "are", "was", "were", "been", "being", "doing", "has", "had", "having","might", "may", "must", "shall", "should", "ought", "does", "did", "done","gone", "going", "made", "putting", "saying", "says", "coming", "gave", "giving","getting", "gets", "goes", "makes", "seeing", "seen", "takes", "taken", "using","uses", "might", "may", "must", "shall", "should", "ought", "been", "does","doing", "done", "gone", "going", "made", "putting", "saying", "says", "coming","gone", "doing", "made", "putting", "said", "say", "sees", "come", "used","uses", "comes", "first", "even", "new", "want", "because", "any", "these","give", "day", "most", "us", "get", "has", "been", "they", "we", "say","her", "she", "or", "an", "will", "my", "one", "all", "would", "there","their", "what", "so", "up", "out", "if", "about", "who", "get", "which","go", "me", "when", "make", "can", "like", "time", "no", "just", "him","know", "take", "people", "into", "year", "your", "good", "some", "could", "them","see", "other", "than", "then", "now", "look", "only", "come", "its", "over","think", "also", "back", "after", "use", "two", "how", "our", "work", "first","well", "way", "even", "new", "want", "because", "any", "these", "give", "day","most", "us", "is", "are", "was", "were", "been", "being", "doing", "has","had", "have", "having", "might", "may", "must", "could", "can", "will", "shall","should", "would", "ought", "does", "did", "doing", "done", "go", "went", "gone","going", "make", "made", "making", "put", "puts", "putting", "say", "said", "saying","says", "come", "came", "coming", "do", "does", "done", "give", "gave", "giving","gets", "make", "makes", "put", "puts", "say", "said", "see", "saw", "seen","take", "took", "taking", "give", "go", "came", "seen", "make", "should", "come","have", "also", "only", "because", "good", "just", "myself", "very", "been", "our","little", "made", "may", "looked", "own", "off", "do", "did", "doing"
+];
 
 // selection of elements
 const speedtype = document.querySelector("#speedtype");
@@ -83,8 +85,10 @@ function newGame(){
     }
     //  used to check the position of the word div
     //  so to adjust the padding of the restart button
+    //  if n=25 then spmetimes it may take 3 lines sometimes it takes 2 lines
+    //  so this case is taken when it takes 3 lines
     if((Number(word.getBoundingClientRect().bottom) > 400) && (n === 25)){
-        restartTest.style.paddingTop = "4.1vh";
+        restartTest.style.paddingTop = "4vh";
     }
 }
 
@@ -153,6 +157,7 @@ document.querySelector("#text").onkeyup = function(e) {
             
             inputtext.push(s.trim());
             text.value = "";
+            console.log(inputtext);
             //  show result
             if(inputtext.length == n && (wordBtn.classList.contains("activeMode"))){
                 let currentDate = new Date();
@@ -320,8 +325,8 @@ function result(timeTaken){
         }
         if(inputtext[i].length > selectedwords[i].length) incorrectChracters += (inputtext[i].length - selectedwords[i].length);
     }
-    typingSpeed = ((correctChracters / 5) * 60) / timeTaken;
-    acc = (correctChracters / (correctChracters + incorrectChracters)) * 100;
+    typingSpeed = (((correctChracters + wd) / 5) * 60) / timeTaken;
+    acc = ((correctChracters / (correctChracters + incorrectChracters))) * 100;
 
     wpm.innerText = Math.round(typingSpeed);
     accuracy.innerText = Math.round(acc);
