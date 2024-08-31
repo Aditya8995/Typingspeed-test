@@ -186,11 +186,32 @@ document.querySelector("#text").onkeyup = function(e) {
                     removeClass(word.children[wd].children[lt+1] , "current");
                 }
             }
+            else if(wd != 0 && inputtext[wd-1] != selectedwords[wd-1]){
+                const currentLetter = document.querySelector(".current");
+                if(currentLetter.getBoundingClientRect().top < 275 && currentLetter.getBoundingClientRect().left < 210){
+                    // do nothing
+                }
+                else{
+                    removeClass(word.children[wd].children[lt] , "current");
+                    wd--;
+                    lt = inputtext[wd].length;
+                    console.log(lt);
+                    text.value = "";
+                    text.value = inputtext[wd];
+                    console.log(text.value);
+                    originallength = selectedwords[wd].length;
+                    console.log(originallength);
+                    if(lt >= originallength) addClass(word.children[wd].children[lt-1] , "cursoratright");
+                    else addClass(word.children[wd].children[lt] , "current");
+                    
+                    inputtext.pop();                    
+                }
+
+            }
         }
         //  if extral letters is to be added 
         else if(lt >= originallength){
             let extra = document.createElement("span");
-            console.log(5);
             extra.innerText = e.key;
             extra.classList.add("incorrect") ;
             word.children[wd].appendChild(extra);
@@ -230,6 +251,7 @@ document.querySelector("#text").onkeyup = function(e) {
         const margin = parseInt(word.style.marginTop || '0px');
         word.style.marginTop = (margin - 47) + 'px';
     }
+    
 }
 
 
